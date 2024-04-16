@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/db"
-	"github.com/Joakim-animate90/go-scrape-twitter/internal/email"
+	email "github.com/Joakim-animate90/go-scrape-twitter/internal/email"
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/model"
 	twitterscraper "github.com/n0madic/twitter-scraper"
 
@@ -75,7 +75,7 @@ func ScrapeTweets(repo *db.TweetRepository) {
 		//check for video
 		if internalTweet.VideoURL != "" {
 			log.Println("Video found in tweet:", internalTweet.ID)
-			email.sendEmailForVideo(internalTweet)
+			email.SendEmailForVideo(internalTweet)
 		}
 
 		lastTweetID = tweet.Tweet.ID
