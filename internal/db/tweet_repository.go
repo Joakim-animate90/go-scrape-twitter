@@ -36,3 +36,59 @@ func (repo *TweetRepository) SaveTweet(tweet model.Tweet) error {
 	log.Println("Tweet saved to the database successfully")
 	return nil
 }
+
+
+// GetAllTweets retrieves all tweets from the database
+func (repo *TweetRepository) GetAllTweets() ([]model.Tweet, error) {
+	var tweets []model.Tweet
+
+	rows, err := repo.db.Query("SELECT tweet_id, text, created_at, image_url, video_url FROM tweets")
+	if err != nil {
+		return nil, fmt.Errorf("error querying tweets: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tweet model.Tweet
+		err := rows.Scan(&tweet.ID, &tweet.Text, &tweet.CreatedAt, &tweet.ImageURL, &tweet.VideoURL)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning tweet row: %v", err)
+		}
+		tweets = append(tweets, tweet)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over tweets: %v", err)
+	}
+
+	return tweets, nil
+}
+
+// GetTweetsWithPagination retrieves tweets with pagination from the database
+func (repo *TweetRepository) GetTweetsWithPagination(page, limit int) ([]model.Tweet, error) {
+	var tweets []model.Tweet
+
+	offset := (page - 1) * limit
+
+	query := fmt.Sprintf("SELECT tweet_id, text, created_at, image_url, video_url FROM tweets LIMIT %d OFFSET %d", limit, offset)
+	rows, err := repo.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("error querying tweets with pagination: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tweet model.Tweet
+		err := rows.Scan(&tweet.ID, &tweet.Text, &tweet.CreatedAt, &tweet.ImageURL, &tweet.VideoURL)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning tweet row: %v", err)
+		}
+		tweets = append(tweets, tweet)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over tweets: %v", err)
+	}
+
+	return tweets, nil
+}

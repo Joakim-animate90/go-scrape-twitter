@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"log"
 	//"time"
+	"net/http"
 
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/api"
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/db"
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/scraper"
 	_ "github.com/lib/pq"
@@ -12,7 +14,15 @@ import (
 
 func main() {
 	// Initialize database connection
-	dbConn, err := sql.Open("postgres", "postgres://postgres:kimzeey23@localhost:5432/twitter_scraper?sslmode=disable")
+	dbUsername := "postgres"
+    dbPassword := "kimzeey23"
+    dbHost := "localhost"
+    dbPort := "5432"
+    dbName := "twitter_scraper"
+
+    // Initialize database connection
+    dbConn, err := sql.Open("postgres", "postgres://"+dbUsername+":"+dbPassword+"@"+dbHost+":"+dbPort+"/"+dbName+"?sslmode=disable")
+    
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -20,12 +30,13 @@ func main() {
 
 	// Create a TweetRepository instance
 	repo := db.NewTweetRepository(dbConn)
+	scraper.ScrapeTweets(repo)
+	http.HandleFunc("/api/saved-posts", func(w http.ResponseWriter, r *http.Request) {
+		api.GetSavedPostsHandler(repo, w, r)
+	})
 
-	// Run the scraper periodically
-	//ticker := time.NewTicker(1 * time.Hour) // Adjust the interval as needed
-	//defer ticker.Stop()
+	http.Handle("/swagger/", http.StripPrefix("/swagger/", http.FileServer(http.Dir("docs"))))
 
-	//for range ticker.C {
-		scraper.ScrapeTweets(repo)
-	//}
+	log.Println("Server listening on port 8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
