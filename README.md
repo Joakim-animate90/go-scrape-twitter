@@ -34,11 +34,11 @@ A simple API that scrapes tweets from a specific Twitter account and saves them 
 
 ## Project Structure
     Here is a basic layout of the project structure:
-    ![Project Structure](./image/tree.png)
+    ![Project Structure](image/tree.png)
 
 
 
-
+g
 ## Running the Application
 1. Navigate to the project directory.
 2. Run the command `go run main.go` to start the application.
