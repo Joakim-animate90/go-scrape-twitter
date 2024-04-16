@@ -34,7 +34,27 @@ A simple API that scrapes tweets from a specific Twitter account and saves them 
 
 ## Project Structure
     Here is a basic layout of the project structure:
-![Project Structure](./images/tree.png)
+    ├── README.md
+    ├── api
+    ├── cmd
+    │   └── main.go
+    ├── go.mod
+    ├── go.sum
+    ├── images
+    │   └── tree.png
+    ├── internal
+    │   ├── api
+    │   │   └── save_post.go
+    │   ├── db
+    │   │   └── tweet_repository.go
+    │   ├── email
+    │   │   └── email.go
+    │   ├── model
+    │   │   └── tweet.go
+    │   └── scraper
+    │       └── scraper.go
+    └── swagger
+    ![Project Structure](./images/tree.png)
 
 
 
