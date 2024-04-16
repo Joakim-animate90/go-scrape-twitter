@@ -10,27 +10,18 @@ import (
 	
 
 )
-// @Summary Get saved posts
-// @Description Get all saved posts from the database
-// @Tags saved-posts
-// @Produce json
-// @Success 200 {array} Post
-//@Router /api/saved-posts [get]
+
 func GetSavedPostsHandler( repo *db.TweetRepository ,w http.ResponseWriter, r *http.Request) {
 	// Parse pagination parameters from query string
 	pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
 
-	// Default values if parameters are not provided or invalid
 	page := 1
 	limit := 10
 
-	// Parse page number
 	if pageStr != "" {
 		page, _ = strconv.Atoi(pageStr)
 	}
-
-	// Parse limit
 	if limitStr != "" {
 		limit, _ = strconv.Atoi(limitStr)
 	}
@@ -47,17 +38,14 @@ func GetSavedPostsHandler( repo *db.TweetRepository ,w http.ResponseWriter, r *h
 		return
 	}
 
-	// Marshal the tweets slice to JSON
 	response, err := json.Marshal(tweets)
 	if err != nil {
 		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
 		return
 	}
 
-	// Set response headers
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	// Write JSON response
 	w.Write(response)
 }

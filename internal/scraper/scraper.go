@@ -14,7 +14,6 @@ import (
 
 var lastTweetID string
 
-// ScrapeTweets scrapes tweets from Coindesk Twitter channel periodically
 func ScrapeTweets(repo *db.TweetRepository) {
     ctx := context.Background()
     channel := "coindesk"
@@ -35,19 +34,16 @@ func ScrapeTweets(repo *db.TweetRepository) {
             continue
         }
 
-        // Check if the tweet already exists in the database
         if repo.TweetExists(tweet.Tweet.ID) {
             log.Println("Tweet already exists in the database:", tweet.Tweet.ID)
             continue
         }
 
-        // Convert tweet to our internal model
         internalTweet := model.Tweet{
             ID:   tweet.Tweet.ID,
             Text: tweet.Tweet.Text,
         }
 
-        // Check and set image and video URLs
         if len(tweet.Photos) > 0 {
             internalTweet.ImageURL = tweet.Photos[0].URL
         }
@@ -55,14 +51,12 @@ func ScrapeTweets(repo *db.TweetRepository) {
             internalTweet.VideoURL = tweet.Videos[0].URL
         }
 
-        // Save the tweet to the database
         saveErr := repo.SaveTweet(internalTweet)
         if saveErr != nil {
             log.Println("Error saving tweet:", saveErr)
             continue
         }
 
-        // Check for video and send email
         if internalTweet.VideoURL != "" {
             log.Println("Video found in tweet:", internalTweet.ID)
             email.SendEmailForVideo(internalTweet)

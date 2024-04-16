@@ -10,17 +10,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// TweetRepository handles interactions with the tweet table in the database
 type TweetRepository struct {
 	db *sql.DB
 }
 
-// NewTweetRepository initializes a new TweetRepository
 func NewTweetRepository(db *sql.DB) *TweetRepository {
 	return &TweetRepository{db: db}
 }
 
-// SaveTweet saves a tweet to the database
 func (repo *TweetRepository) SaveTweet(tweet model.Tweet) error {
 	// Prepare the INSERT statement
 	stmt, err := repo.db.Prepare("INSERT INTO tweets (tweet_id, text, created_at, image_url, video_url) VALUES ($1, $2, $3, $4, $5)")
@@ -37,7 +34,6 @@ func (repo *TweetRepository) SaveTweet(tweet model.Tweet) error {
 	return nil
 }
 
-// TweetExists checks if a tweet with the given ID exists in the database
 func (repo *TweetRepository) TweetExists(tweetID string) bool {
 	var exists bool
 	err := repo.db.QueryRow("SELECT EXISTS(SELECT 1 FROM tweets WHERE tweet_id = $1)", tweetID).Scan(&exists)
@@ -48,8 +44,6 @@ func (repo *TweetRepository) TweetExists(tweetID string) bool {
 	return exists
 }
 
-
-// GetAllTweets retrieves all tweets from the database
 func (repo *TweetRepository) GetAllTweets() ([]model.Tweet, error) {
 	var tweets []model.Tweet
 
@@ -74,8 +68,6 @@ func (repo *TweetRepository) GetAllTweets() ([]model.Tweet, error) {
 
 	return tweets, nil
 }
-
-// GetTweetsWithPagination retrieves tweets with pagination from the database
 func (repo *TweetRepository) GetTweetsWithPagination(page, limit int) ([]model.Tweet, error) {
 	var tweets []model.Tweet
 

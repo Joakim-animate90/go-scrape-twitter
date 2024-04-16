@@ -17,7 +17,6 @@ func SendEmailForVideo(tweet model.Tweet) {
 			"Tweet Text: " + tweet.Text + "\n" +
 			"Video URL: " + tweet.VideoURL
 
-		// Send email
 		err := sendEmail(subject, body)
 		if err != nil {
 			log.Println("Error sending email:", err)
@@ -33,17 +32,14 @@ func sendEmail(subject, body string) error {
 	password := ""
 	recipient := ""
 
-	// Compose email message
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
 	m.SetHeader("To", recipient)
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/plain", body)
 
-	// Create a new SMTP client session
 	d := gomail.NewDialer("smtp.gmail.com", 465, sender, password)
 
-	// Send the email
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
