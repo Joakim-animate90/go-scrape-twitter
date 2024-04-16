@@ -1,4 +1,3 @@
-// internal/model/tweet.go
 package model
 
 import "time"

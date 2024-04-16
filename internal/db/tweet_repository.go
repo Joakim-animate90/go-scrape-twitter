@@ -5,8 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/model"
 	_ "github.com/lib/pq"
-	"github.com/Joakim-animate90/go-scrape-twitter/model"
 )
 
 // TweetRepository handles interactions with the tweet table in the database
@@ -27,8 +28,6 @@ func (repo *TweetRepository) SaveTweet(tweet model.Tweet) error {
 		return fmt.Errorf("error preparing SQL statement: %v", err)
 	}
 	defer stmt.Close()
-
-	// Execute the INSERT statement
 	_, err = stmt.Exec(tweet.ID, tweet.Text, tweet.CreatedAt, tweet.ImageURL, tweet.VideoURL)
 	if err != nil {
 		return fmt.Errorf("error executing SQL statement: %v", err)

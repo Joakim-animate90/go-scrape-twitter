@@ -1,27 +1,31 @@
-// cmd/main.go
-
 package main
 
 import (
-    "fmt"
-	"context"
+	"database/sql"
+	"log"
+	//"time"
 
-    twitterscraper "github.com/n0madic/twitter-scraper"
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/db"
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/scraper"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-    scraper := twitterscraper.New().SetSearchMode(twitterscraper.SearchUsers)
-	username := "JAnimate123"
-	password := "kimzeey23"
-
-    err := scraper.Login(username, password)
-    if err != nil {
-        panic(err)
-    }
-	for tweet := range scraper.GetTweets(context.Background(), "coindesk", 50) {
-		if tweet.Error != nil {
-			panic(tweet.Error)
-		}
-		fmt.Println(tweet.Text)
+	// Initialize database connection
+	dbConn, err := sql.Open("postgres", "postgres://postgres:kimzeey23@localhost:5432/twitter_scraper?sslmode=disable")
+	if err != nil {
+		log.Fatalf("Error connecting to the database: %v", err)
 	}
+	defer dbConn.Close()
+
+	// Create a TweetRepository instance
+	repo := db.NewTweetRepository(dbConn)
+
+	// Run the scraper periodically
+	//ticker := time.NewTicker(1 * time.Hour) // Adjust the interval as needed
+	//defer ticker.Stop()
+
+	//for range ticker.C {
+		scraper.ScrapeTweets(repo)
+	//}
 }

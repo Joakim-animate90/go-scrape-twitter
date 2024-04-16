@@ -1,16 +1,23 @@
 package scraper
 
-
 import (
 	"context"
 	"log"
-	"github.com/n0madic/twitter-scraper"
-	"github.com/Joakim-animate90/go-scrape-twitter/model"
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/db"
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/email"
+	"github.com/Joakim-animate90/go-scrape-twitter/internal/model"
+	twitterscraper "github.com/n0madic/twitter-scraper"
+
+	_ "github.com/lib/pq"
+	
+
 )
+
 
 var lastTweetID string
 
-func scrapeTweets() {
+// ScrapeTweets scrapes tweets from Coindesk Twitter channel periodically
+func ScrapeTweets(repo *db.TweetRepository) {
 	ctx := context.Background()
 	channel := "coindesk"
 	count := 50
@@ -19,10 +26,10 @@ func scrapeTweets() {
 	username := "JAnimate123"
 	password := "kimzeey23"
 
-    err := scraper.Login(username, password)
-    if err != nil {
-        panic(err)
-    }
+	err := scraper.Login(username, password)
+	if err != nil {
+		panic(err)
+	}
 
 	for tweet := range scraper.GetTweets(ctx, channel, count) {
 		if tweet.Error != nil {
@@ -30,53 +37,50 @@ func scrapeTweets() {
 			continue
 		}
 
-		// Check if this tweet is already processed
 		if tweet.Tweet.ID == lastTweetID {
 			log.Println("Already processed tweet:", tweet.Tweet.ID)
 			continue
 		}
 
+
+
+		//get the first index in each
+
+
 		// Convert tweet to our internal model
 		internalTweet := model.Tweet{
 			ID:        tweet.Tweet.ID,
 			Text:      tweet.Tweet.Text,
-			CreatedAt: tweet.Tweet.CreatedAt,
-			ImageURL:  tweet.Tweet.ImageURL,
-			VideoURL:  tweet.Tweet.VideoURL,
+		
+		}
+		//since we have the id lets get each tweet 
+
+
+
+		// Convert tweet to our internal model
+		if len(tweet.Photos) > 0{
+			internalTweet.ImageURL = tweet.Photos[0].URL
+		}
+		if len(tweet.Videos) > 0 {
+			internalTweet.VideoURL = tweet.Videos[0].URL
 		}
 
 		// Save the tweet to the database
-		saveTweetToDB(internalTweet)
+		saveErr := repo.SaveTweet(internalTweet)
+		if saveErr != nil {
+			log.Println("Error saving tweet:", saveErr)
+			continue
+		}
 
-		// Check for video and send email
-		sendEmailForVideo(internalTweet)
+		//check for video
+		if internalTweet.VideoURL != "" {
+			log.Println("Video found in tweet:", internalTweet.ID)
+			email.sendEmailForVideo(internalTweet)
+		}
 
-		// Update lastTweetID
 		lastTweetID = tweet.Tweet.ID
 	}
 }
 
 
-
-
-
-// ScrapeTweetsPeriodically scrapes tweets from Coindesk Twitter channel periodically
-//func ScrapeTweetsPeriodically() {
-	//for {
-		// Scrape tweets from Coindesk Twitter channel
-		//scraper := twitterscraper.New()
-		//err := scraper.LoginOpenAccount()
-		//if err != nil {
-			//panic(err)
-		//}
-		//for tweet := range scraper.GetTweets(context.Background(), "twitter", 50) {
-			//if tweet.Error != nil {
-			//	panic(tweet.Error)
-			//}
-			//fmt.Println(tweet.Text)
-		//}
-		// Sleep for 1 hour before scraping again
-		//time.Sleep(time.Hour)
-	//}
-//}
 
