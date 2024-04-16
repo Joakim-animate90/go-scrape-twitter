@@ -73,7 +73,31 @@ The project accomplishes the following:
     ![API Pagination](./images/api_pagination.png)
 
 
+## Database Setup
 
+    Before running the application, you need to set up the PostgreSQL database. Here are the steps:
+
+    1. Open your PostgreSQL command line interface.
+    2. Create the database using the following command:
+        ```sql
+        CREATE DATABASE twitter_scraper;
+        ```
+    3. Connect to the newly created database:
+        ```sql
+        \c twitter_scraper;
+        ```
+    4. Create the `tweets` table:
+        ```sql
+        CREATE TABLE tweets (
+            tweet_id VARCHAR(255) PRIMARY KEY,
+            text TEXT,
+            created_at TIMESTAMP,
+            image_url TEXT,
+            video_url TEXT
+        );
+        ```
+    Now your database is ready to store tweets.
+    
 ## Running the Application
 1. Navigate to the project directory.
 2. Run the command `go run main.go` to start the application.
