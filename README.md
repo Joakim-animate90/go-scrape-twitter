@@ -56,9 +56,24 @@ A simple API that scrapes tweets from a specific Twitter account and saves them 
     └── swagger
     ![Project Structure](./images/tree.png)
 
+## Output of the project
+The project accomplishes the following:
+
+1. It scrapes tweets from a specified Twitter account and saves them in a PostgreSQL database. This includes text, images, and videos from the tweets.
+
+    ![Scraped Tweet](./images/scraped_tweet.png)
 
 
-g
+2. It sends an email notification whenever a tweet with a video is scraped. This feature is useful for users who want to be immediately notified of video content.
+
+    ![Email Notification](./images/email_notification.png)
+
+3. It provides a GET API for retrieving the saved posts with pagination. This allows for efficient retrieval of tweets, especially when dealing with a large number of saved tweets.
+
+    ![API Pagination](./images/api_pagination.png)
+
+
+
 ## Running the Application
 1. Navigate to the project directory.
 2. Run the command `go run main.go` to start the application.
