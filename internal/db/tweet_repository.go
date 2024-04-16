@@ -37,6 +37,17 @@ func (repo *TweetRepository) SaveTweet(tweet model.Tweet) error {
 	return nil
 }
 
+// TweetExists checks if a tweet with the given ID exists in the database
+func (repo *TweetRepository) TweetExists(tweetID string) bool {
+	var exists bool
+	err := repo.db.QueryRow("SELECT EXISTS(SELECT 1 FROM tweets WHERE tweet_id = $1)", tweetID).Scan(&exists)
+	if err != nil {
+		log.Printf("Error checking if tweet exists: %v", err)
+		return false
+	}
+	return exists
+}
+
 
 // GetAllTweets retrieves all tweets from the database
 func (repo *TweetRepository) GetAllTweets() ([]model.Tweet, error) {
