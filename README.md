@@ -34,7 +34,7 @@ A simple API that scrapes tweets from a specific Twitter account and saves them 
 
 ## Project Structure
     Here is a basic layout of the project structure:
-    ![Project Structure](images/tree.png)
+    ![Project Structure](./images/tree.png)
 
 
 
