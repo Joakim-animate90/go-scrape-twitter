@@ -2,6 +2,7 @@ package email
 
 import (
 	"log"
+
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/model"
 	"gopkg.in/gomail.v2"
 )
@@ -28,9 +29,9 @@ func SendEmailForVideo(tweet model.Tweet) {
 
 func sendEmail(subject, body string) error {
 	// Email configuration
-	sender := "joakimbwire23@gmail.com"
-	password := "hawx alvt nfsb xsnv"
-	recipient := "joakimngeso@gmail.com"
+	sender := ""
+	password := ""
+	recipient := ""
 
 	// Compose email message
 	m := gomail.NewMessage()

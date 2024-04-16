@@ -14,8 +14,8 @@ import (
 
 func main() {
 	// Initialize database connection
-	dbUsername := "postgres"
-    dbPassword := "kimzeey23"
+	dbUsername := ""
+    dbPassword := ""
     dbHost := "localhost"
     dbPort := "5432"
     dbName := "twitter_scraper"

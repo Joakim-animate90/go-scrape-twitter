@@ -3,16 +3,14 @@ package scraper
 import (
 	"context"
 	"log"
+
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/db"
 	email "github.com/Joakim-animate90/go-scrape-twitter/internal/email"
 	"github.com/Joakim-animate90/go-scrape-twitter/internal/model"
 	twitterscraper "github.com/n0madic/twitter-scraper"
 
 	_ "github.com/lib/pq"
-	
-
 )
-
 
 var lastTweetID string
 
@@ -23,8 +21,8 @@ func ScrapeTweets(repo *db.TweetRepository) {
 	count := 50
 
 	scraper := twitterscraper.New().SetSearchMode(twitterscraper.SearchUsers)
-	username := "JAnimate123"
-	password := "kimzeey23"
+	username := ""
+	password := ""
 
 	err := scraper.Login(username, password)
 	if err != nil {
@@ -42,23 +40,17 @@ func ScrapeTweets(repo *db.TweetRepository) {
 			continue
 		}
 
-
-
 		//get the first index in each
-
 
 		// Convert tweet to our internal model
 		internalTweet := model.Tweet{
-			ID:        tweet.Tweet.ID,
-			Text:      tweet.Tweet.Text,
-		
+			ID:   tweet.Tweet.ID,
+			Text: tweet.Tweet.Text,
 		}
-		//since we have the id lets get each tweet 
-
-
+		//since we have the id lets get each tweet
 
 		// Convert tweet to our internal model
-		if len(tweet.Photos) > 0{
+		if len(tweet.Photos) > 0 {
 			internalTweet.ImageURL = tweet.Photos[0].URL
 		}
 		if len(tweet.Videos) > 0 {
@@ -81,6 +73,3 @@ func ScrapeTweets(repo *db.TweetRepository) {
 		lastTweetID = tweet.Tweet.ID
 	}
 }
-
-
-
